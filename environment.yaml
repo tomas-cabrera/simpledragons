@@ -1,0 +1,9 @@
+name: simpledragons
+channels:
+  - http://astroconda.gemini.edu/public
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - dragons
+  - ds9
