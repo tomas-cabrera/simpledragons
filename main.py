@@ -1,3 +1,8 @@
+# A script to facilitate the use of the DRAGONS software for reducing Gemini data.
+# Script usage is 'python main.py /path/to/gemini_data --science_exptime=<exptime>'
+# 'gemini_data' should be the directory containing the raw science files for the program, and also the calibration files as suggested by the Gemini archive.
+# NB: There are some calibration files with data labels of the form 'G[N,S]-CALYYYYMMDD-#-###-G-BIAS', with filenames prefixed with a 'g'.  I do not know what these files are for, they break the current script, and data reductions are possible without them, so for the time being do not include these files in the 'gemini_data' directory (all other calibration files should be there).
+
 import argparse
 import bz2
 import glob
@@ -182,10 +187,11 @@ def run_reduction(data_dir, science_exptime=None):
     # reduce_bias.uparms = [("addDQ:user_bpm", user_bpm)]
     reduce_bias.runr()
 
-    reduce_bias = Reduce()
-    reduce_bias.files.extend(files["bias_fullframe"])
-    # reduce_bias.uparms = [("addDQ:user_bpm", user_bpm)]
-    reduce_bias.runr()
+    if files["bias_fullframe"]:
+        reduce_bias = Reduce()
+        reduce_bias.files.extend(files["bias_fullframe"])
+        # reduce_bias.uparms = [("addDQ:user_bpm", user_bpm)]
+        reduce_bias.runr()
 
     ##############################
     ###      Master Flat       ###
@@ -327,8 +333,7 @@ def main():
     # Make quicklook
     quicklook(reduce_dir)
 
+    return reduce_dir
+
 if __name__ == "__main__":
-    # main()
-    quicklook(
-        "/home/tcabrera/data/academia/proposals/NOIRLab/Gemini/2025B/Gemini-2025B-BBH-nuclear/PhaseIII/S250725j_T202507251542117m350010/gemini_data/reduction"
-    )
+    main()
